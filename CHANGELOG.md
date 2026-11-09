@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/Bytestay/specwise-action/compare/v1.0.3...v1.1.0) (2026-11-09)
+
+
+### Features
+
+* accept an API.market key as well as a RapidAPI key ([#6](https://github.com/Bytestay/specwise-action/issues/6)) ([16c5b2d](https://github.com/Bytestay/specwise-action/commit/16c5b2d4d2e515879276dc189c572bf5588947f7))
+
+
+### Bug Fixes
+
+* retry a rate-limit 429 instead of reporting the monthly quota as exhausted ([#4](https://github.com/Bytestay/specwise-action/issues/4)) ([cd11682](https://github.com/Bytestay/specwise-action/commit/cd11682cb79f8a651ba4edf05dfdd6b276055d42))
+
 ## [1.0.3](https://github.com/Bytestay/specwise-action/compare/v1.0.2...v1.0.3) (2026-11-06)
 
 

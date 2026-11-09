@@ -23,9 +23,9 @@ How it works:
 - Each breaking change is also an annotation on the line of the spec.
 - The check fails until the breaking changes are fixed, or accepted with a label.
 
-It calls the [Specwise API](https://specwise.bytestay.pt) with **your own RapidAPI key**.
+It calls the [Specwise API](https://specwise.bytestay.pt) with **your own key**, from RapidAPI or API.market.
 
-- The free Basic plan has 15 requests a month.
+- The free plan has 15 requests a month on both.
 - One changed spec is one request.
 
 ```yaml
@@ -50,6 +50,18 @@ jobs:
 2. Add your RapidAPI key as the repository secret `RAPIDAPI_KEY`.
 3. Add the workflow above.
 
+### With an API.market key
+
+Subscribe to [Specwise on API.market](https://api.market/store/bytestay/specwise) instead (the Free plan is $0 with a hard limit). Then store the key as `API_MARKET_KEY` and pass it as `api-market-key`:
+
+```yaml
+      - uses: bytestay/specwise-action@v1
+        with:
+          api-market-key: ${{ secrets.API_MARKET_KEY }}
+```
+
+Set one key, not both. The action calls the marketplace the key belongs to.
+
 `labeled` and `unlabeled` are there so that adding the `breaking-ok` label re-runs the check.
 
 Each run costs the same requests again.
@@ -72,7 +84,8 @@ Each run costs the same requests again.
 
 | input | default | meaning |
 |---|---|---|
-| `rapidapi-key` | *required* | your RapidAPI key |
+| `rapidapi-key` | *empty* | your RapidAPI key; set this or `api-market-key` |
+| `api-market-key` | *empty* | your API.market key; set this or `rapidapi-key` |
 | `spec-paths` | `**/openapi.yaml,**/openapi.yml,**/openapi.json,**/*.openapi.yaml,**/*.openapi.yml,**/*.openapi.json` | comma-separated globs |
 | `exclude-paths` | `**/node_modules/**,**/vendor/**` | comma-separated globs to skip |
 | `base-ref` | *empty* | what to compare with: default the pull request's base, or the previous commit on a push |
@@ -95,7 +108,7 @@ Each run costs the same requests again.
 | `semver` | suggested bump: `major`, `minor`, `patch` or `none` |
 | `specs-compared` | specs compared with their base version |
 | `requests-used` | API requests used by this run |
-| `quota-remaining` | requests left this month, from RapidAPI's `x-ratelimit-requests-remaining` header |
+| `quota-remaining` | requests left this month, from the `x-ratelimit-requests-remaining` header; empty when the marketplace doesn't send it |
 | `comment-url` | the pull request comment, empty when none was posted |
 
 To use an output in a later step, give this step an `id` and read `steps.<id>.outputs.semver`.
@@ -117,10 +130,11 @@ Most repositories have one spec. A pull request then costs one request, and only
 | situation | what the action does |
 |---|---|
 | no key on a pull request from a fork (forks don't get secrets) | warning, step passes |
-| key invalid or not subscribed (401/403) | error with the subscribe link, step fails |
+| key invalid or not subscribed (401/403, or 400 from API.market) | error with the subscribe link, step fails |
 | this branch's spec can't be parsed (422) | error annotation on the line, step fails |
 | the base version can't be parsed | warning, that spec is skipped |
 | quota exhausted (429) | `on-quota-exceeded: warn` gives a warning and the step passes; `fail` fails it |
+| rate limit (429 that doesn't mention the quota) | up to 3 retries, then a warning: the step passes |
 | API down or timing out | one retry, then a warning: **your build is never failed because of us** |
 | no permission to comment | a notice; the report is in the job summary |
 

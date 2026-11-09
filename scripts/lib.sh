@@ -2,6 +2,7 @@
 # Functions used by run.sh; sourced by the bats tests too.
 
 SPECWISE_HOST="specwise-openapi-validator-and-diff-api.p.rapidapi.com"
+API_MARKET_URL="https://prod.api.market/api/v1/bytestay/specwise"
 MAX_BYTES=921600 # both versions go in one request, and the API takes at most 2 MB per request
 ZERO_SHA="0000000000000000000000000000000000000000"
 
@@ -123,8 +124,9 @@ base_file() {
 # call_api ENDPOINT BODY_FILE OUT HEADERS → prints the HTTP status ("000" when the request itself failed)
 call_api() {
   local endpoint="$1" body="$2" out="$3" headers="$4" code
-  local url="${SPECWISE_API_URL:-https://$SPECWISE_HOST}/v1/$endpoint"
-  local auth=(-H "X-RapidAPI-Key: ${INPUT_RAPIDAPI_KEY:-}" -H "X-RapidAPI-Host: $SPECWISE_HOST")
+  local base="https://$SPECWISE_HOST" auth=(-H "X-RapidAPI-Key: ${INPUT_RAPIDAPI_KEY:-}" -H "X-RapidAPI-Host: $SPECWISE_HOST")
+  if [[ ${MARKET:-} == api.market ]]; then base="$API_MARKET_URL"; auth=(-H "x-api-market-key: ${INPUT_API_MARKET_KEY:-}"); fi
+  local url="${SPECWISE_API_URL:-$base}/v1/$endpoint"
   # SPECWISE_API_URL / SPECWISE_AUTH_HEADER let the tests and maintainers call the API directly
   [[ -n ${SPECWISE_AUTH_HEADER:-} ]] && auth=(-H "$SPECWISE_AUTH_HEADER")
   code="$(curl -sS --max-time 60 -o "$out" -D "$headers" -w '%{http_code}' \

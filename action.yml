@@ -7,8 +7,11 @@ branding:
 
 inputs:
   rapidapi-key:
-    description: Your RapidAPI key for the Specwise API (store it as a secret). The free Basic plan has 15 requests a month.
-    required: true
+    description: Your RapidAPI key for the Specwise API (store it as a secret). Set this or api-market-key. The free Basic plan has 15 requests a month.
+    default: ""
+  api-market-key:
+    description: Your API.market key for the Specwise API (store it as a secret). Set this or rapidapi-key.
+    default: ""
   spec-paths:
     description: Comma-separated globs for OpenAPI 3.x specs (YAML or JSON).
     default: "**/openapi.yaml,**/openapi.yml,**/openapi.json,**/*.openapi.yaml,**/*.openapi.yml,**/*.openapi.json"
@@ -63,7 +66,7 @@ outputs:
     description: API requests used by this run.
     value: ${{ steps.check.outputs.requests-used }}
   quota-remaining:
-    description: Requests left this month, from RapidAPI's response headers (empty if unknown).
+    description: Requests left this month, from the marketplace's response headers (empty if unknown or not sent).
     value: ${{ steps.check.outputs.quota-remaining }}
   comment-url:
     description: URL of the pull request comment (empty when none was posted).
@@ -77,6 +80,7 @@ runs:
       run: '"$GITHUB_ACTION_PATH/scripts/run.sh"'
       env:
         INPUT_RAPIDAPI_KEY: ${{ inputs.rapidapi-key }}
+        INPUT_API_MARKET_KEY: ${{ inputs.api-market-key }}
         INPUT_SPEC_PATHS: ${{ inputs.spec-paths }}
         INPUT_EXCLUDE_PATHS: ${{ inputs.exclude-paths }}
         INPUT_BASE_REF: ${{ inputs.base-ref }}
