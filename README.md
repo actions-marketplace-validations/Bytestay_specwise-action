@@ -201,6 +201,10 @@ actionlint
 
 The end-to-end test (`.github/workflows/e2e.yml`) runs the action against the real API monthly, with the `RAPIDAPI_KEY` secret.
 
+## History
+
+Formerly Hybrid Forge Lab. This repository continues `hybridforgelab/specwise-action` under the ByteStay name since November 2026, so the older commits come from there.
+
 ## Licence
 
 MIT.
