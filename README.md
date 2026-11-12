@@ -25,7 +25,7 @@ How it works:
 
 It calls the [Specwise API](https://specwise.bytestay.pt) with **your own key**, from RapidAPI or API.market.
 
-- The free plan has 15 requests a month on both.
+- The free plan is 15 requests a month on RapidAPI, and a 7-day trial of 15 calls on API.market.
 - One changed spec is one request.
 
 ```yaml
@@ -52,7 +52,7 @@ jobs:
 
 ### With an API.market key
 
-Subscribe to [Specwise on API.market](https://api.market/store/bytestay/specwise) instead (the Free plan is $0 with a hard limit). Then store the key as `API_MARKET_KEY` and pass it as `api-market-key`:
+Subscribe to [Specwise on API.market](https://api.market/store/bytestay/specwise) instead (the Free plan is a $0 trial: 15 calls for 7 days). Then store the key as `API_MARKET_KEY` and pass it as `api-market-key`:
 
 ```yaml
       - uses: bytestay/specwise-action@v1
